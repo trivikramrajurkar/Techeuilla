@@ -1,10 +1,21 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import joblib
 import io
 import numpy as np
 
 app = FastAPI(title="Techeuilla Financial Fraud Detection API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Load trained model
 model = joblib.load("../saved_models/xgboost.pkl")

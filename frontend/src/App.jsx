@@ -9,6 +9,9 @@ import {
   Activity,
   FileWarning,
   Download,
+  Brain,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 
 import {
@@ -30,11 +33,10 @@ function App() {
 
 
   // ============================================================
-  // ANALYZE CSV
+  // ANALYZE FILE
   // ============================================================
 
   const analyzeFile = async () => {
-
     if (!file) {
       setError("Please select a CSV file first.");
       return;
@@ -45,9 +47,7 @@ function App() {
     setData(null);
 
     try {
-
       const formData = new FormData();
-
       formData.append("file", file);
 
       const response = await axios.post(
@@ -58,7 +58,6 @@ function App() {
       setData(response.data);
 
     } catch (err) {
-
       console.error(err);
 
       setError(
@@ -67,9 +66,7 @@ function App() {
       );
 
     } finally {
-
       setLoading(false);
-
     }
   };
 
@@ -79,13 +76,11 @@ function App() {
   // ============================================================
 
   const downloadReport = () => {
-
     if (!data?.top_risk_transactions?.length) {
       return;
     }
 
     const rows = data.top_risk_transactions;
-
     const headers = Object.keys(rows[0]);
 
     const csv = [
@@ -99,9 +94,7 @@ function App() {
           )
           .join(",")
       ),
-
     ].join("\n");
-
 
     const blob = new Blob(
       [csv],
@@ -110,20 +103,15 @@ function App() {
       }
     );
 
-
     const url = URL.createObjectURL(blob);
 
     const link = document.createElement("a");
 
     link.href = url;
-
-    link.download =
-      "techeuilla_fraud_report.csv";
+    link.download = "techeuilla_fraud_report.csv";
 
     document.body.appendChild(link);
-
     link.click();
-
     document.body.removeChild(link);
 
     URL.revokeObjectURL(url);
@@ -136,19 +124,16 @@ function App() {
 
   const summary = data?.summary;
 
-
   const chartData = summary
     ? [
         {
           name: "Low Risk",
           value: summary.low_risk,
         },
-
         {
           name: "Medium Risk",
           value: summary.medium_risk,
         },
-
         {
           name: "High Risk",
           value: summary.high_risk,
@@ -162,9 +147,7 @@ function App() {
   // ============================================================
 
   return (
-
     <div className="app">
-
 
       {/* ======================================================
           HEADER
@@ -179,15 +162,11 @@ function App() {
           </div>
 
           <div>
-
-            <h1>
-              Techeuilla
-            </h1>
+            <h1>Techeuilla</h1>
 
             <p>
               Financial Fraud Detection
             </p>
-
           </div>
 
         </div>
@@ -202,7 +181,6 @@ function App() {
         </div>
 
       </header>
-
 
 
       {/* ======================================================
@@ -224,30 +202,22 @@ function App() {
               AI-POWERED TRANSACTION ANALYSIS
             </p>
 
-
             <h2>
-
               Detect suspicious transactions
-
               <span>
                 {" "}before they become fraud.
               </span>
-
             </h2>
 
-
             <p className="hero-text">
-
               Upload transaction data and let our
               XGBoost fraud detection engine identify
-              high-risk activity.
-
+              high-risk activity and explain why it was flagged.
             </p>
 
           </div>
 
         </section>
-
 
 
         {/* ====================================================
@@ -257,22 +227,16 @@ function App() {
         <section className="upload-card">
 
           <div className="upload-icon">
-
             <Upload size={30} />
-
           </div>
-
 
           <h3>
             Upload Transaction Data
           </h3>
 
-
           <p>
-            Upload a CSV file containing engineered
-            transaction features.
+            Upload a CSV file containing transaction features.
           </p>
-
 
           <label className="file-input">
 
@@ -280,23 +244,18 @@ function App() {
               type="file"
               accept=".csv"
               onChange={(event) => {
-
                 setFile(
                   event.target.files?.[0] || null
                 );
 
                 setError("");
-
               }}
             />
 
-
             <span>
-
               {file
                 ? file.name
                 : "Choose CSV file"}
-
             </span>
 
           </label>
@@ -309,22 +268,19 @@ function App() {
           >
 
             {loading
-              ? "Analyzing..."
+              ? "Analyzing transactions..."
               : "Analyze Transactions"}
 
           </button>
 
 
           {error && (
-
             <div className="error">
               {error}
             </div>
-
           )}
 
         </section>
-
 
 
         {/* ====================================================
@@ -332,7 +288,6 @@ function App() {
         ==================================================== */}
 
         {data && summary && (
-
           <>
 
 
@@ -342,13 +297,11 @@ function App() {
 
             <section className="stats-grid">
 
-
               <StatCard
                 icon={<Activity />}
                 title="Transactions"
                 value={summary.total_transactions}
               />
-
 
               <StatCard
                 icon={<AlertTriangle />}
@@ -357,14 +310,12 @@ function App() {
                 danger
               />
 
-
               <StatCard
                 icon={<CheckCircle />}
                 title="Safe Transactions"
                 value={summary.safe_transactions}
                 success
               />
-
 
               <StatCard
                 icon={<FileWarning />}
@@ -375,15 +326,14 @@ function App() {
             </section>
 
 
-
             {/* ==================================================
-                CHART + RISK OVERVIEW
+                RISK DASHBOARD
             ================================================== */}
 
             <section className="dashboard-grid">
 
 
-              {/* Risk Distribution */}
+              {/* RISK DISTRIBUTION */}
 
               <div className="card chart-card">
 
@@ -441,29 +391,18 @@ function App() {
                 <div className="legend">
 
                   <span>
-
                     <i className="low"></i>
-
                     Low
-
                   </span>
 
-
                   <span>
-
                     <i className="medium"></i>
-
                     Medium
-
                   </span>
 
-
                   <span>
-
                     <i className="high"></i>
-
                     High
-
                   </span>
 
                 </div>
@@ -471,8 +410,7 @@ function App() {
               </div>
 
 
-
-              {/* Risk Overview */}
+              {/* RISK OVERVIEW */}
 
               <div className="card risk-card">
 
@@ -500,14 +438,12 @@ function App() {
                   type="high"
                 />
 
-
                 <RiskRow
                   label="Medium Risk"
                   value={summary.medium_risk}
                   total={summary.total_transactions}
                   type="medium"
                 />
-
 
                 <RiskRow
                   label="Low Risk"
@@ -521,13 +457,11 @@ function App() {
             </section>
 
 
-
             {/* ==================================================
-                TOP RISK TRANSACTIONS
+                HIGHEST RISK TRANSACTIONS
             ================================================== */}
 
             <section className="card table-card">
-
 
               <div className="card-header">
 
@@ -556,7 +490,6 @@ function App() {
                 </button>
 
               </div>
-
 
 
               <div className="table-wrapper">
@@ -600,10 +533,8 @@ function App() {
                         <tr key={index}>
 
                           <td>
-
                             {transaction.TransactionID ||
                               `TXN-${index + 1}`}
-
                           </td>
 
 
@@ -675,7 +606,6 @@ function App() {
             </section>
 
 
-
             {/* ==================================================
                 EXPLAINABLE AI
             ================================================== */}
@@ -683,7 +613,6 @@ function App() {
             {data.explanations?.length > 0 && (
 
               <section className="card explanation-section">
-
 
                 <div className="card-header">
 
@@ -694,100 +623,221 @@ function App() {
                     </h3>
 
                     <p>
-
-                      SHAP identifies the features
-                      that influenced each fraud prediction.
-
+                      Understand why the AI considers
+                      these transactions risky.
                     </p>
 
+                  </div>
+
+                  <div className="ai-badge">
+                    <Brain size={15} />
+                    SHAP Powered
                   </div>
 
                 </div>
 
 
+                {/* ==============================================
+                    EXPLANATIONS
+                ============================================== */}
 
                 {data.explanations
                   .slice(0, 5)
                   .map((item, index) => (
 
                     <div
-                      className="explanation-card"
+                      className="human-explanation"
                       key={index}
                     >
 
 
-                      <div className="explanation-title">
+                      {/* ========================================
+                          RISK HEADER
+                      ======================================== */}
 
-                        <strong>
+                      <div className="explanation-main">
 
-                          Transaction #
-                          {item.transaction_index + 1}
+                        <div>
 
-                        </strong>
+                          <div className="explanation-label">
+
+                            {item.risk_level === "HIGH"
+                              ? "HIGH FRAUD RISK"
+                              : item.risk_level === "MEDIUM"
+                                ? "MEDIUM FRAUD RISK"
+                                : "LOW FRAUD RISK"}
+
+                          </div>
 
 
-                        <span>
+                          <h4>
+                            Transaction #
+                            {item.transaction_index + 1}
+                          </h4>
+
+                        </div>
+
+
+                        <div
+                          className={`probability ${
+                            item.risk_level?.toLowerCase()
+                          }`}
+                        >
 
                           {(
                             item.fraud_probability * 100
                           ).toFixed(2)}
 
-                          % fraud probability
+                          %
 
-                        </span>
+                        </div>
 
                       </div>
 
 
+                      {/* ========================================
+                          OVERALL EXPLANATION
+                      ======================================== */}
 
-                      <div className="factor-list">
+                      <div className="why-box">
+
+                        <div className="why-icon">
+
+                          <Brain size={20} />
+
+                        </div>
+
+
+                        <div>
+
+                          <strong>
+                            Why was this flagged?
+                          </strong>
+
+                          <p>
+                            {item.overall_explanation}
+                          </p>
+
+                        </div>
+
+                      </div>
+
+
+                      {/* ========================================
+                          KEY SIGNALS
+                      ======================================== */}
+
+                      <div className="signals">
+
+                        <h4>
+                          Key signals detected
+                        </h4>
 
 
                         {item.top_factors?.map(
                           (factor, factorIndex) => (
 
                             <div
-                              className="factor"
+                              className="signal"
                               key={factorIndex}
                             >
 
-
-                              <strong>
-
-                                {factor.feature}
-
-                              </strong>
-
-
-                              <span
-                                className={
+                              <div
+                                className={`signal-icon ${
                                   factor.impact > 0
-                                    ? "factor-danger"
-                                    : "factor-safe"
-                                }
+                                    ? "signal-danger"
+                                    : "signal-safe"
+                                }`}
                               >
 
                                 {factor.impact > 0
-                                  ? "+"
-                                  : ""}
+                                  ? <ArrowUp size={15} />
+                                  : <ArrowDown size={15} />
+                                }
 
-                                {Number(
-                                  factor.impact
-                                ).toFixed(3)}
-
-                              </span>
+                              </div>
 
 
-                              <small>
+                              <div className="signal-content">
 
-                                {factor.direction}
+                                <div className="signal-title">
 
-                              </small>
+                                  <strong>
+                                    {factor.title}
+                                  </strong>
+
+
+                                  <span
+                                    className={
+                                      factor.impact > 0
+                                        ? "risk-text"
+                                        : "safe-text"
+                                    }
+                                  >
+
+                                    {factor.impact > 0
+                                      ? "Raises risk"
+                                      : "Reduces risk"}
+
+                                  </span>
+
+                                </div>
+
+
+                                <p>
+                                  {factor.explanation}
+                                </p>
+
+
+                                {/* Technical detail */}
+                                <small>
+                                  Model signal:{" "}
+                                  {factor.feature}
+                                </small>
+
+                              </div>
 
                             </div>
 
                           )
                         )}
+
+                      </div>
+
+
+                      {/* ========================================
+                          RECOMMENDATION
+                      ======================================== */}
+
+                      <div
+                        className={`recommendation ${
+                          item.risk_level?.toLowerCase()
+                        }`}
+                      >
+
+                        <div className="recommendation-icon">
+
+                          {item.risk_level === "HIGH"
+                            ? <AlertTriangle size={18} />
+                            : item.risk_level === "MEDIUM"
+                              ? <FileWarning size={18} />
+                              : <CheckCircle size={18} />
+                          }
+
+                        </div>
+
+
+                        <div>
+
+                          <strong>
+                            Recommended action
+                          </strong>
+
+                          <p>
+                            {item.recommendation}
+                          </p>
+
+                        </div>
 
                       </div>
 
@@ -800,11 +850,9 @@ function App() {
             )}
 
           </>
-
         )}
 
       </main>
-
 
 
       {/* ======================================================
@@ -819,9 +867,7 @@ function App() {
 
       </footer>
 
-
     </div>
-
   );
 }
 
@@ -898,7 +944,6 @@ function RiskRow({
 
     <div className="risk-row">
 
-
       <div className="risk-info">
 
         <span>
@@ -927,7 +972,6 @@ function RiskRow({
       <small>
         {percentage}%
       </small>
-
 
     </div>
 

@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data files
+data/*.csv
+data/**/*.csv
+
+# Trained models
+saved_models/*.pkl
+models/*.pkl
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
